@@ -26,7 +26,12 @@ ul.nav li {
 }
 
 ul.nav li a {
+    background-color: #000;
     display:inline-block;
+}
+
+ul.nav li a:hover {
+    background-color: #7AC943;
 }
 
 div.centered {
