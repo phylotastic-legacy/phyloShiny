@@ -9,6 +9,10 @@
     <script type="text/javascript" src="{{=URL('static', 'js/jquery-ui-1.8.17.custom.min.js')}}"></script>
     <script type="text/javascript" src="{{=URL('static', 'js/phylotastic.js')}}"></script>
     <script type="text/javascript" src="{{=URL('static', 'reconciliotastic/js/reconciliotastic.js')}}"></script>
+	<script>
+	{{import socket}}
+	var baseURL = 'http://phylotastic.nescent.org/web2py/{{=request.application}}/static';
+	</script>
 </head>
 <body>
 
@@ -23,13 +27,17 @@
 			<br>
 			<form name="dataform">
 			<ul class="datasources">
-				<li>
-			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input><input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input><input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input></li>
+				
 			<li><input class="radio" type="radio" name="datasource" value="demo" checked="true" onchange="toggleDatasources()"></input>
-			<select id="demos" name="demos">
+			<select id="demos" name="demos"`>
 				<option>Select a demo dataset...</option>
+				{{for n in datalist:}}
+				<option value="{{=n}}">{{=n}}</option>
+				{{pass}}
 			</select>
 			</li>
+			<li>
+			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input><input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input><input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input></li>
 			</ul>
 			<input type="button" class="reconcileSubmit" value="Reconcile"></input>
 			</form>

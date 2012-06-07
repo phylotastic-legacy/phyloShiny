@@ -8,7 +8,6 @@
 ## - download is for downloading files uploaded in the db (does streaming)
 ## - call exposes all registered services (none by default)
 #########################################################################
-
 def index():
     """
     example action using the internationalization operator T and flash
@@ -67,4 +66,3 @@ def data():
       LOAD('default','data.load',args='tables',ajax=True,user_signature=True)
     """
     return dict(form=crud())
-
