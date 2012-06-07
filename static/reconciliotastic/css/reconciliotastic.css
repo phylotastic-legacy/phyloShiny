@@ -1,6 +1,6 @@
 body, html {
     font-size: 10px;
-    text-align: left;
+    text-align: left !important;
 }
 
 div.leftcol {
