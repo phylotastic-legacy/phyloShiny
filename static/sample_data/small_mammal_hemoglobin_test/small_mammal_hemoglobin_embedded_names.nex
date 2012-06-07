@@ -1,0 +1,10 @@
+#NEXUS
+
+BEGIN TAXA;
+  DIMENSIONS ntax=8;
+  TAXLABELS zeta_globin__Oryctolagus_cuniculus_ hemoglobin_subunit_zeta__Oryctolagus_cuniculus_ PREDICTED__hemoglobin_subunit_zeta_like__Ailuropoda_melanoleuca_ PREDICTED__hemoglobin_subunit_zeta__Bos_taurus_ PREDICTED__hemoglobin_subunit_mu_like_isoform_2__Macaca_mulatta_ hemoglobin_subunit_mu__Bos_taurus_ PREDICTED__hemoglobin_subunit_mu_like__Ailuropoda_melanoleuca_ hemoglobin_subunit_mu__Macaca_mulatta_;
+ENDBLOCK;
+
+BEGIN TREES;
+  TREE Blast_guide_tree = (((zeta_globin__Oryctolagus_cuniculus_:0.0148714, hemoglobin_subunit_zeta__Oryctolagus_cuniculus_:0.0143319):0.103221, (PREDICTED__hemoglobin_subunit_zeta_like__Ailuropoda_melanoleuca_:0.115529, PREDICTED__hemoglobin_subunit_zeta__Bos_taurus_:0.109471):0.0314799):0.102645, (PREDICTED__hemoglobin_subunit_mu_like_isoform_2__Macaca_mulatta_:0.0759175, ((hemoglobin_subunit_mu__Bos_taurus_:0.0776932, PREDICTED__hemoglobin_subunit_mu_like__Ailuropoda_melanoleuca_:0.0449015):0.0531958, hemoglobin_subunit_mu__Macaca_mulatta_:0.0290655):0.0769142):0.347866);
+ENDBLOCK;
