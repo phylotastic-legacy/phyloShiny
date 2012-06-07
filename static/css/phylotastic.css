@@ -40,7 +40,9 @@ div.centered {
 }
 
 img.logo {
-    margin: auto;z-index:-1; margin-top: -108px;
+    margin: auto;
+    z-index:-1;
+    margin-top: -108px;
 }
 
 div.wrapper {
