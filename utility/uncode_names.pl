@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 #
+
 =pod
 
 =head1 NAME
@@ -33,7 +34,7 @@ and then translated them using the file with the whole set of 76030 names (very 
 
 =head1 VERSION
 
-$Id$
+June 8, 2012 (hackathon)
 
 =head1 AUTHOR
 
