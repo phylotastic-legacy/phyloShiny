@@ -19,6 +19,20 @@ div.view {
     width:80%;
 }
 
+.ui-progressbar-value {
+    background: #7AC943;
+}
+
+#progressContent {
+    font-family: helvetica;
+    color: #7AC943;
+}
+
+#progressDone {
+    font-family: helvetica;
+    color: #aaa;
+}
+
 input.reconcileSubmit {
     margin-right: 1em;
     float: right;

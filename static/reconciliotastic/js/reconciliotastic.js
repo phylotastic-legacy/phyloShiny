@@ -1,5 +1,10 @@
 var treeFileName = '';
 
+$(function() {
+	$( '#progressbar' ).progressbar({
+		value: 0
+	});
+});
 
 function toggleDatasources() {
     var upload = document.dataform.elements['datasource'][1].checked;
@@ -7,6 +12,12 @@ function toggleDatasources() {
     document.getElementById('demos').disabled = upload;
     document.getElementById('uploadFileName').disabled = !upload;
     document.getElementById('uploadSubmit').disabled = !upload;
+    
+    document.getElementById('recconcileSubmit').disabled = false
+}
+
+function enableSubmit() {
+    document.getElementById('reconcileSubmit').disabled = false
 }
 
 $(function(){
@@ -20,6 +31,9 @@ $(function(){
         for(var i = 0; i < len; i++)
             $('#tabs').tabs('remove',0);
         
+        // reset progress bar
+        $( '#progressbar' ).progressbar( 'option', 'value', 0 );
+        
         treeFileName = '';
         
         // user wants to upload data, deal with it...
@@ -32,52 +46,79 @@ $(function(){
         else {
             var treeName = document.dataform.elements['demos'][document.dataform.elements['demos'].selectedIndex].value;
            if(treeName == 'Mammal'){
-               treeFileName += '/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt';
+               treeFileName = '/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt';
            } 
            else {
                console.log('This functionality is not yet implemented in this demo.');
             return;
            }
         }
-        
+        document.getElementById('reconcileSubmit').disabled = true
         // make the new tabs
-        var tabshtml = '';
-        // var tabs = ['Reconcile Tree','Gene Tree','Species Tree'];
-        // for(var i = 0; i < tabs.length; i++) {
-            tabshtml = '<div><img id=\"loading\" class=\"loading\"></div>';
-            tabshtml += '<applet archive=\"'+baseURL+'/lib/archaeopteryx_applets.jar\"';
-            tabshtml += 'code=\"org.forester.archaeopteryx.ArchaeopteryxE.class\" codebase=\"'+baseURL+'/lib\" width=\"800\" height=\"500\" alt=\"ArchaeopteryxE is not working on your system (requires at least Sun Java 1.5)!\"><param name=\"url_of_tree_to_load\" value=\"'+baseURL+treeFileName+'\"><param name=\"config_file\" value=\"\"><param name=\"java_arguments\" value=\"-Xmx512m\">';
-            tabshtml += '</applet>';
-            addTab('GeneTree','Gene Tree',tabshtml);
-        // }
+        document.getElementById('progressContent').innerHTML = "Loading gene tree into Archaeopteryx...<br>"
         
-        $(function() {
-        	$('.tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *')
-        		.removeClass('ui-corner-all ui-corner-top')
-        		.addClass('ui-corner-bottom viz');
-        });
+        addArchTab(treeFileName, 'GeneTree', 'Gene Tree')
+        updateProgress(35,'Getting species list corresponding to the selected gene tree...<br>')
         
         $.ajax({ url: 'getSpeciesList',
                 data: {treefn: treeFileName},
                 success: getPhylotasticTree});
-        
     })
 });
+
+function updateProgress(percent, message) {
+    $( '#progressbar' ).progressbar( 'option', 'value', percent );
+    document.getElementById('progressDone').innerHTML += document.getElementById('progressContent').innerHTML
+    document.getElementById('progressContent').innerHTML = message
+}
+
+function addArchTab(treeFileName, divid, tabname) {
+    var tabshtml = '';
+    tabshtml += '<div><img id=\"loading\" class=\"loading\"></div>';
+    tabshtml += '<applet archive=\"'+baseURL+'/lib/archaeopteryx_applets.jar\"';
+    tabshtml += 'code=\"org.forester.archaeopteryx.ArchaeopteryxE.class\" codebase=\"'+baseURL+'/lib\" width=\"800\" height=\"500\" alt=\"ArchaeopteryxE is not working on your system (requires at least Sun Java 1.5)!\"><param name=\"url_of_tree_to_load\" value=\"'+baseURL+treeFileName+'\"><param name=\"config_file\" value=\"\"><param name=\"java_arguments\" value=\"-Xmx512m\">';
+    tabshtml += '</applet>';
+    addTab(divid,tabname,tabshtml);
+    $(function() {
+    	$('.tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *')
+    		.removeClass('ui-corner-all ui-corner-top')
+    		.addClass('ui-corner-bottom viz');
+    });
+}
 
 function getPhylotasticTree(response) {
     var rv = eval('('+response+')')
     var species = rv['keptNodes']
-    var phylotasticURLbase = 'http://phylotastic-wg.nescent.org/script/phylotastic.cgi?species='
+    var speciesString = '';
     for(var i = 0; i < species.length; i++)
-        phylotasticURLbase += species[i].replace(' ','_') + ','
-    phylotasticURLbase = phylotasticURLbase.slice(0, -1)
-    phylotasticURLbase += '&tree=mammals&format=newick'
-    $.ajax({ url: 'getReconcileTree',
-                data: {phylotasticTreefn: phylotasticURLbase, geneTreefn: treeFileName},
+        speciesString = species[i].replace(' ','_') + ','
+    speciesString = speciesString.slice(0, -1)
+    
+    updateProgress(55, 'Getting Phylotastic! tree that corresponds to found species...<br>')
+    
+    $.ajax({ url: 'getPhylotasticTree',
+                data: { speciesString: speciesString, geneTreefn: treeFileName},
+                success: reconcileTrees});
+}
+
+function reconcileTrees(response) {
+    var rv = eval('('+response+')')
+    var geneTree = rv['geneTreenm']
+    var speciesTree = rv['speciesTreeName']
+    
+    addArchTab(speciesTree, 'SpeciesTree', 'Species Tree')
+    
+    updateProgress(65, 'Phylotastic! tree aquired, reconciling gene and species trees...<br>')
+    $.ajax({ url: 'reconcileTrees',
+                data: { geneTree:geneTree, speciesTree:speciesTree},
                 success: showReconcileTree});
 }
 
 function showReconcileTree(response) {
+    updateProgress(80,'Trees reconciled, loading reconcile tree into Archaeopteryx...<br>')
     var rv = eval('('+response+')')
-    console.log(rv)
+    var reconcileTreefn = rv['reconcileTreeName']
+    
+    addArchTab(reconcileTreefn, 'ReconcileTree', 'Reconcile Tree')
+    updateProgress(100, 'All trees loaded.')
 }

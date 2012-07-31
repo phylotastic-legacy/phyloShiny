@@ -10,7 +10,7 @@
 #########################################################################
 import os
 import socket
-import urllib
+import urllib2
 
 def index():
     datalist = os.listdir(os.curdir+'/applications/shiny/static/sample_data/')
@@ -33,10 +33,34 @@ def getSpeciesList():
     
     return response.json( dict(removedNodes = removedNodes, keptNodes = keptNodes, processedGeneTree = processedGeneTree))
 
-def getReconcileTree():
-    speciesTreeURL = request.vars.phylotasticTreefn
-    speciesTree = urllib.urlopen(speciesTreeURL)
+def getPhylotasticTree():
+    phylotasticURLbase = 'http://phylotastic-wg.nescent.org/script/phylotastic.cgi?species='
+    speciesString = request.vars.speciesString
+    speciesTreeURL = phylotasticURLbase+speciesString+'&tree=mammals&format=newick'
+    speciesTree = urllib2.urlopen(speciesTreeURL)
+    stree = speciesTree.read()
     geneTreefp = request.vars.geneTreefn
     
-    removedNodes = []
-    return response.json( dict(removedNodes = removedNodes, speciesTree = speciesTree))
+    geneTreeName = geneTreefp[:-4]
+    speciesTreeName = geneTreeName+'_species_tree.txt'
+    speciesTreefp =  os.curdir+'/applications/shiny/static'+geneTreeName+'_species_tree.txt'
+    
+    open(speciesTreefp,'w').write(stree)
+    return response.json( dict(geneTreenm = geneTreeName, speciesTreeName = speciesTreeName))
+
+def reconcileTrees():
+    geneTreeName = request.vars.geneTree
+    speciesTreefp = request.vars.speciesTree
+    speciesTreeName = geneTreeName+'_species_tree.txt'
+    shellCall = 'java -Xmx1024m -cp '
+    shellCall += os.curdir+'/applications/shiny/static/lib/forester.jar '
+    shellCall += 'org.forester.application.gsdi '
+    shellCall += '-m -q '
+    shellCall += os.curdir+'/applications/shiny/static'+geneTreeName+'_preprocessed_gene_tree.phylo.xml '
+    shellCall += speciesTreefp+' '
+    
+    os.system(shellCall)
+    
+    recTreefp = geneTreeName+'_preprocessed_gene_tree.phylo_gsdi_out.phylo.xml'
+    
+    return response.json( dict(reconcileTreeName = recTreefp, speciesTreeName = speciesTreeName))
