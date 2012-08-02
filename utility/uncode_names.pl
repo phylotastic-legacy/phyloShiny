@@ -15,7 +15,7 @@
 
 =head1 DESCRIPTION
 
-This script was made specifically to convert the trees from Goloboff, et al 2009 so we could use them phylotastically.   It represents the last step in a 3-step process: 
+This script was made specifically to convert the trees from Goloboff, et al 2009 (Cladistics 2009, 25:211-230) so we could use them phylotastically.   It represents the last step in a 3-step process: 
  1. convert the TNT trees (in any of the *.tre files) to newick
  2. pick the tree you want and put it in a file by itself
  3. replace the numeric codes in the tree with species names from Taxon_Names_Only.tnt
