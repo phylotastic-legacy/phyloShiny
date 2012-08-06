@@ -123,6 +123,7 @@ div#accordion {
 }
 
 /* for the MapReduce pruner web form */
+/* somehow this is not working so I over-rode it in the html using cols= and rows= */
 textarea.species {
 	width: 96%;
 	height: 60px;
@@ -142,6 +143,7 @@ table.examples {
 /* for the MapReduce pruner web form */
 ul.information li { 
 	margin-top: 0.5em; 
+	text-align: left; 
 }
 
 ul.information { 
