@@ -1,12 +1,11 @@
 body, html {
     font-family: Helvetica;
     font-size: 12pt;
-    text-align: left;
+    text-align: center;
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-    text-align: center;
 }
 
 h4 {
@@ -123,6 +122,23 @@ div#accordion {
     padding-right: 0px;
 }
 
+.clearfix {
+    display: inline-block;
+}
+
+html[xmlns] .clearfix {
+    display: block;
+}
+
+* html .clearfix {
+    height: 1%;
+}
+
+/* for the MapReduce pruner web form */
+div.pruner {
+    text-align: left;
+}
+
 /* for the MapReduce pruner web form */
 /* somehow this is not working so I over-rode it in the html using cols= and rows= */
 textarea.species {
@@ -144,17 +160,4 @@ table.examples {
 /* for the MapReduce pruner web form */
 ul.information li { 
 	margin-top: 0.5em; 
-	text-align: left; 
-}
-
-.clearfix {
-    display: inline-block;
-}
-
-html[xmlns] .clearfix {
-    display: block;
-}
-
-* html .clearfix {
-    height: 1%;
 }
