@@ -1,5 +1,6 @@
 body, html {
-    font-size: 10px;
+    font-family: Helvetica;
+    font-size: 12pt;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -7,8 +8,51 @@ body, html {
     text-align: center;
 }
 
+h4 {
+    font-size: 20pt;
+    margin: .5em 0;
+}
+
+div.wrapper {
+    width: 1000px;
+    height: 100%;
+}
+
+div.maincol {
+    width: 700px;
+    text-align: left;
+    margin: auto;
+}
+
 div.navwrapper {
     left:50%;
+}
+
+ul.demolist {
+    padding-left: 0;
+    font-family: Helvetica;
+    font-size: 20pt;
+    list-style-type: none;
+}
+
+ul.demolist li {
+    
+}
+
+ul.demolist li p{
+    margin-left: 1em;
+    margin-top: 5px;
+    font-size: 12pt;
+    color: #888;
+}
+
+ul.demolist li a{
+    text-decoration: none;
+    color: #444;
+}
+
+ul.demolist li a:hover{
+    color: #7AC943;
 }
 
 ul.nav {
@@ -32,6 +76,15 @@ ul.nav li a {
 
 ul.nav li a:hover {
     background-color: #7AC943;
+}
+
+ul.littleul {
+    font-size: 12pt;
+/*    list-style-type: none;*/
+}
+
+blockquote {
+    font-size: 12pt;
 }
 
 div.centered {
@@ -67,6 +120,32 @@ div#accordion {
 .ui-tabs .ui-tabs-panel {
     padding-left: 0px;
     padding-right: 0px;
+}
+
+/* for the MapReduce pruner web form */
+textarea.species {
+	width: 96%;
+	height: 60px;
+	padding: 5px;
+	font-family: Monaco;
+    font-size: 10pt;
+}
+
+/* for the MapReduce pruner web form */
+table.examples { 
+	border: 1px;
+	width: 100%;
+	font-family: Monaco;
+    font-size: 10pt;
+}
+
+/* for the MapReduce pruner web form */
+ul.information li { 
+	margin-top: 0.5em; 
+}
+
+ul.information { 
+	text-align: left; 
 }
 
 .clearfix {
