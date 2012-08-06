@@ -1,6 +1,7 @@
 body, html {
     font-family: Helvetica;
     font-size: 12pt;
+    text-align: left;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -143,10 +144,6 @@ table.examples {
 /* for the MapReduce pruner web form */
 ul.information li { 
 	margin-top: 0.5em; 
-	text-align: left; 
-}
-
-ul.information { 
 	text-align: left; 
 }
 
