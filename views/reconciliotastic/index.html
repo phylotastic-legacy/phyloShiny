@@ -22,7 +22,7 @@
 <div class="wrapper clearfix">
 	<div class="leftcol clearfix">
 		<p class="ui-state-default ui-corner-all ui-helper-clearfix ui-widget " style="padding:4px; margin:0px;">
-		Select a gene tree source
+		Select sources (currently only one example)
 			</p>
 			<br>
 			<form name="dataform">
@@ -36,8 +36,12 @@
 				{{pass}}
 			</select>
 			</li>
+<!-- this option currently is not supported
 			<li>
-			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input><input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input><input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input></li>
+			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input>
+			<input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input><input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input>
+			</li>
+-->
 			</ul>
 			<input type="button" id="reconcileSubmit" class="reconcileSubmit" value="Reconcile"></input>
 			</form>
@@ -82,7 +86,7 @@ The visualization steps in #1, #4 and #6 are done using Christian Zmasek's Archa
                 	   	 </div>
                 	   	 <h3><a href="#">Demo Datasets</a></h3>
                 	   	 <div class="accordionSection"><p>
-	Data sets were assembled by Arlin Stoltzfus using NCBI web tools to identify homologs, compute a phylogeny, and prune the phylogeny to create a data set with interesting features.</p>
+Currently the demo uses just one input-- a gene tree with 100 primate beta-tubulin genes.  The <a href="https://github.com/phylotastic/phyloShiny/blob/master/static/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt">raw tree file</a> is on github in case you want to see it.  This and other data sets were assembled by Arlin Stoltzfus using NCBI web tools to identify homologs, compute a phylogeny, and prune the phylogeny to create a data set with interesting features.</p>
             	   	     </div>
 						<h5><a href="#">The Shiny Team</a></h5>
                 	   	 <div class="accordionSection">
