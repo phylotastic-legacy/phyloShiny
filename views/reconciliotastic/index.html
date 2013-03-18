@@ -58,15 +58,15 @@
         	   	            <p>
                 	   	    <b class="big">Reconciliotastic</b> is a demonstration system showing a phylotastic approach to the "reconciliation problem" (for explanation, see <a href="http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html">http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html</a>). A phylogeny of genes (proteins) may reflect duplications, losses, and lateral transfers. "Reconciling" a gene tree with a species tree reveals these events.
 <br>
-The Reconcili-o-tastic demo begins with an input gene tree and proceeds as follows:
-<ul>
-<li>1. The gene tree is uploaded to a server; it is displayed</li>
-<li>2. Gene or protein names in the input tree are identified</li>
-<li>3. The corresponding species names are found</li>
-<li>4. A species tree is retrieved phylotastically; it is displayed</li>
-<li>5. The species tree and the gene tree are reconciled</li>
-<li>6. the reconciled tree is displayed</li>
-</ul>
+The Reconcili-o-tastic demo currently allows only 1 input choice, which is a predetermined gene tree. The demo proceeds as follows:
+<ol>
+<li>The gene tree is read and displayed</li>
+<li>Gene or protein names in the input tree are identified</li>
+<li>The corresponding species names are found</li>
+<li>A species tree is retrieved phylotastically; it is displayed</li>
+<li>The species tree and the gene tree are reconciled</li>
+<li>The reconciled tree is displayed</li>
+</ol>
 <br>
 Step 2 and 3 are carried out by a modified version of Christian Zmasek's SDI program. In step 3, SDI invokes web services provided by UniProt to find the species for a given accession number. Step 4 uses a phylotastic demo server that extracts a subtree form a phylogeny of 4500 mammals from Bininda-Emonds, et al. Step 5 is carried out by Christian Zmasek's SDI program.
 <br>
