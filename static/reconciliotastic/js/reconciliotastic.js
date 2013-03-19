@@ -13,7 +13,7 @@ function toggleDatasources() {
     document.getElementById('uploadFileName').disabled = !upload;
     document.getElementById('uploadSubmit').disabled = !upload;
     
-    document.getElementById('recconcileSubmit').disabled = false
+    document.getElementById('reconcileSubmit').disabled = false
 }
 
 function enableSubmit() {
