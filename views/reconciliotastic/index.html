@@ -31,7 +31,7 @@
 			<input class="radio" type="radio" name="datasource" value="demo" checked="true" onchange="toggleDatasources()"></input>
 			Select a demo
 			<select id="demos" name="demos" onchange="enableSubmit()" onclick="enableSubmit()">
-				<option>demos (only "Mammal" works)</option>
+				<option>Some gene trees</option>
 				{{for n in datalist:}}
 				<option value="{{=n}}">{{=n}}</option>
 				{{pass}}

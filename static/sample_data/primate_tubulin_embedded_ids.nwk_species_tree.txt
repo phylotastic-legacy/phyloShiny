@@ -1,2 +1,0 @@
-((Callithrix_jacchus,(Macaca_mulatta,(Homo_sapiens,Pan_troglodytes))));
-

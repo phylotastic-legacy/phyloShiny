@@ -56,7 +56,7 @@ $(function(){
         }
         else {
             var treeName = document.dataform.elements['demos'][document.dataform.elements['demos'].selectedIndex].value;
-			treeFileName = '/sample_data/demo_genetrees/demo_'+treeName; 
+			treeFileName = '/sample_data/demo_'+treeName+'/input_genetree.nwk.txt'; 
 //           if(treeName == 'Mammal'){
 //               treeFileName = '/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt';
 //           } 

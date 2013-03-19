@@ -13,9 +13,8 @@ import socket
 import urllib2
 
 def index():
-#    datalist = os.listdir(os.curdir+'/applications/shiny/static/sample_data/')
+    datalist = os.listdir(os.curdir+'/applications/shiny/static/sample_data/')
 #    datalist = [n.split('_')[1].split('.')[0] for n in datalist if n.split('_')[0] == 'namelist']
-    datalist = os.listdir(os.curdir+'/applications/shiny/static/sample_data/demo_genetrees')
     datalist = [n.split('_',1)[1] for n in datalist if n.split('_')[0] == 'demo']
     return dict(datalist=datalist)
 
