@@ -22,7 +22,7 @@
 <div class="wrapper clearfix">
 	<div class="leftcol clearfix">
 		<p class="ui-state-default ui-corner-all ui-helper-clearfix ui-widget " style="padding:4px; margin:0px;">
-		Select sources (currently only one example)
+		Select sources 
 			</p>
 			<br>
 			<form name="dataform">
@@ -30,18 +30,17 @@
 				
 			<li><input class="radio" type="radio" name="datasource" value="demo" checked="true" onchange="toggleDatasources()"></input>
 			<select id="demos" name="demos" onchange="enableSubmit()" onclick="enableSubmit()">
-				<option>Select a demo gene tree...</option>
+				<option>Select a demo (only "Mammal" example works)</option>
 				{{for n in datalist:}}
 				<option value="{{=n}}">{{=n}}</option>
 				{{pass}}
 			</select>
 			</li>
-<!-- this option currently is not supported
 			<li>
 			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input>
-			<input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input><input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input>
+			<input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input>
+			<input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input>
 			</li>
--->
 			</ul>
 			<input type="button" id="reconcileSubmit" class="reconcileSubmit" value="Reconcile"></input>
 			</form>
