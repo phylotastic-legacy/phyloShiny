@@ -22,15 +22,16 @@
 <div class="wrapper clearfix">
 	<div class="leftcol clearfix">
 		<p class="ui-state-default ui-corner-all ui-helper-clearfix ui-widget " style="padding:4px; margin:0px;">
-		Select sources 
+		Select a demo or upload a file 
 			</p>
 			<br>
 			<form name="dataform">
 			<ul class="datasources">
-				
-			<li><input class="radio" type="radio" name="datasource" value="demo" checked="true" onchange="toggleDatasources()"></input>
+			<li>
+			<input class="radio" type="radio" name="datasource" value="demo" checked="true" onchange="toggleDatasources()"></input>
+			Select a demo
 			<select id="demos" name="demos" onchange="enableSubmit()" onclick="enableSubmit()">
-				<option>Select a demo (only "Mammal" example works)</option>
+				<option>demos (only "Mammal" works)</option>
 				{{for n in datalist:}}
 				<option value="{{=n}}">{{=n}}</option>
 				{{pass}}
@@ -38,6 +39,7 @@
 			</li>
 			<li>
 			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input>
+			Upload a file (not implemented)
 			<input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input>
 			<input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input>
 			</li>
