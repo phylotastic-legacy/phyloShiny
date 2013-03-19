@@ -6,6 +6,9 @@ $(function() {
 	});
 });
 
+// toggle back and forth between elements in the form list (demo vs. upload)
+// when one radio button is activated, the other is inactivated
+
 function toggleDatasources() {
     var upload = document.dataform.elements['datasource'][1].checked;
     
@@ -19,6 +22,14 @@ function toggleDatasources() {
 function enableSubmit() {
     document.getElementById('reconcileSubmit').disabled = false
 }
+
+// start the reconciliation process based on user's choice of inputs 
+//   prepare (reset display) 
+//   get the filename for the user's choice of tree
+//   prepare the progress bar
+//   add a tab
+//   get the species list (calls back to python)
+//   on success, get phylotastic tree (invokes subsequent steps)    
 
 $(function(){
     $('input.reconcileSubmit').click(function(){
@@ -45,13 +56,14 @@ $(function(){
         }
         else {
             var treeName = document.dataform.elements['demos'][document.dataform.elements['demos'].selectedIndex].value;
-           if(treeName == 'Mammal'){
-               treeFileName = '/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt';
-           } 
-           else {
-               console.log('This functionality is not yet implemented in this demo.');
-            return;
-           }
+			treeFileName = '/sample_data/demo_genetrees/demo_'+treeName; 
+//           if(treeName == 'Mammal'){
+//               treeFileName = '/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt';
+//           } 
+//           else {
+//               console.log('This functionality is not yet implemented in this demo.');
+//            return;
+//           }
         }
         document.getElementById('reconcileSubmit').disabled = true
         // make the new tabs
@@ -72,6 +84,8 @@ function updateProgress(percent, message) {
     document.getElementById('progressContent').innerHTML = message
 }
 
+// add a tab with an archeopteryx viewer for a tree (gene tree, species tree, reconciled tree)
+
 function addArchTab(treeFileName, divid, tabname) {
     var tabshtml = '';
     tabshtml += '<div><img id=\"loading\" class=\"loading\"></div>';
@@ -85,6 +99,9 @@ function addArchTab(treeFileName, divid, tabname) {
     		.addClass('ui-corner-bottom viz');
     });
 }
+
+// callback to python to get phylotastic tree
+// on success, reconcile tree
 
 function getPhylotasticTree(response) {
     var rv = eval('('+response+')')
@@ -100,6 +117,9 @@ function getPhylotasticTree(response) {
                 data: { speciesString: speciesString, geneTreefn: treeFileName},
                 success: reconcileTrees});
 }
+
+// callback to python to reconcile tree
+// on success, display tree
 
 function reconcileTrees(response) {
     var rv = eval('('+response+')')
