@@ -56,14 +56,18 @@ $(function(){
         }
         else {
             var treeName = document.dataform.elements['demos'][document.dataform.elements['demos'].selectedIndex].value;
-			treeFileName = '/sample_data/demo_'+treeName+'/input_genetree.nwk.txt'; 
-//           if(treeName == 'Mammal'){
-//               treeFileName = '/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt';
-//           } 
-//           else {
-//               console.log('This functionality is not yet implemented in this demo.');
-//            return;
-//           }
+// March 2013 revisions
+// this is what Arlin would like to do instead of the if-else below
+//	
+//		treeFileName = '/sample_data/demo_'+treeName+'/input_genetree.nwk.txt'; 
+//
+          if(treeName == 'Mammal'){
+              treeFileName = '/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt';
+          } 
+          else {
+              console.log('This functionality is not yet implemented in this demo.');
+           return;
+          }
         }
         document.getElementById('reconcileSubmit').disabled = true
         // make the new tabs

@@ -14,8 +14,10 @@ import urllib2
 
 def index():
     datalist = os.listdir(os.curdir+'/applications/shiny/static/sample_data/')
-#    datalist = [n.split('_')[1].split('.')[0] for n in datalist if n.split('_')[0] == 'namelist']
-    datalist = [n.split('_',1)[1] for n in datalist if n.split('_')[0] == 'demo']
+    datalist = [n.split('_')[1].split('.')[0] for n in datalist if n.split('_')[0] == 'namelist']
+# March 2013 revisions
+# this is what Arlin would like to do instead of the preceding line
+#   datalist = [n.split('_',1)[1] for n in datalist if n.split('_')[0] == 'demo']
     return dict(datalist=datalist)
 
 def getSpeciesList():

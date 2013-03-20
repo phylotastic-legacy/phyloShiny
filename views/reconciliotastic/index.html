@@ -11,6 +11,8 @@
     <script type="text/javascript" src="{{=URL('static', 'reconciliotastic/js/reconciliotastic.js')}}"></script>
 	<script>
 	{{import socket}}
+	
+	<!-- we probably should be pulling in the base url and the application name separately and putting those in variables for js and python to use --> 
 	var baseURL = 'http://phylotastic.nescent.org/{{=request.application}}/static';
 	</script>
 </head>
@@ -25,6 +27,24 @@
 		Select a demo or upload a file 
 			</p>
 			<br>
+			<form name="dataform">
+			<ul class="datasources">
+
+			<li><input class="radio" type="radio" name="datasource" value="demo" checked="true" onchange="toggleDatasources()"></input>
+			<select id="demos" name="demos" onchange="enableSubmit()" onclick="enableSubmit()">
+				<option>Select a demo gene tree...</option>
+				{{for n in datalist:}}
+				<option value="{{=n}}">{{=n}}</option>
+				{{pass}}
+			</select>
+			</li>
+			<li>
+			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input><input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input><input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input></li>
+			</ul>
+			<input type="button" id="reconcileSubmit" class="reconcileSubmit" value="Reconcile"></input>
+			</form>
+
+<!-- 
 			<form name="dataform">
 			<ul class="datasources">
 			<li>
@@ -46,6 +66,7 @@
 			</ul>
 			<input type="button" id="reconcileSubmit" class="reconcileSubmit" value="Reconcile"></input>
 			</form>
+ -->
 			<!-- <input type="button" class="progress" value="Progress"></input> -->
 			<br>
 			<br>
