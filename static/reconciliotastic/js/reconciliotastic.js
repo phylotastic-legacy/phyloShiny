@@ -1,148 +1,225 @@
-var treeFileName = '';
+// Function called if an ajax call fails. Tries to update the most
+// recent "stage" DIV with an error message.
+function failureFn(error) {
+  if (app.lastId) {
+    updateStatus({
+      id: app.lastId,
+      msg: ['Oops &mdash; there was a server error.<br/>',
+        'Try reloading the page, or contact support@phylotastic.org'].join(''),
+      status: 'running'
+    });
+  }
+}
+
+// Updates the status of a specified "stage", which is one of the
+// three progress-indicating DIVs on the left side. 'params' is an
+// object with key-value pairs.
+function updateStatus(params) {
+  var id = params.id;
+  var el = $('#' + id);
+
+  // Store this 'stage' ID in case we have a failure and want to give
+  // it an error message; see failureFn
+  app.lastId = id;
+
+  if (params.status) {
+    // Clear existing CSS classes, add the current status (usually
+    // 'running' or 'finished').
+    el.removeClass('ready running finished');
+    el.addClass(params.status);
+  }
+
+  if (params.msg !== undefined) {
+    // Update the message DIV
+    el.find('.msg').html(params.msg);
+  }
+}
+
+function openTreeView(file, header) {
+  // Opens a window to show the tree indicated by the given file
+  // name. Passes the current 'treeName' as a parameter, as well as a
+  // header giving some context to the visualized tree.
+  window.open('visualize?header=' + header + '&treeName=' + app.treeName + '&file=' + file + '');
+}
+
+function createVizLink(data) {
+  // Returns the HTML for a <a href.../> link to visualize the given
+  // tree. 'data' is the data directly returned from the controller
+  // Ajax call.
+  return[
+  '<a class="viz-link" tree-file="' + data.vizFile + '"',
+  ' tree-label="' + data.vizLabel + '">Click to view</a>', ].join('');
+}
+
+// Store some "global" variables within this app object.
+var app = {
+  treeName: undefined,
+  treeFileName: undefined
+};
 
 $(function() {
-	$( '#progressbar' ).progressbar({
-		value: 0
-	});
-});
 
-// toggle back and forth between elements in the form list (demo vs. upload)
-// when one radio button is activated, the other is inactivated
+  var button = $('button#reconcileSubmit');
 
-function toggleDatasources() {
-    var upload = document.dataform.elements['datasource'][1].checked;
-    
-    document.getElementById('demos').disabled = upload;
-    document.getElementById('uploadFileName').disabled = !upload;
-    document.getElementById('uploadSubmit').disabled = !upload;
-    
-    document.getElementById('reconcileSubmit').disabled = false
-}
+  // Create the accordion panels
+  $(".innerAccordion").accordion({
+    collapsible: true,
+    heightStyle: 'fill'
+  });
 
-function enableSubmit() {
-    document.getElementById('reconcileSubmit').disabled = false
-}
+  var onSelect = function() {
+    var val = this.value;
+    if (!val.match(/select a demo/i)) {
+      // Enable the button if users chose a non-empty value.
+      button.removeAttr('disabled');
+    }
+  };
+  $('select#demos').on('change', onSelect);
+  $('select#demos').on('click', onSelect);
 
-// start the reconciliation process based on user's choice of inputs 
-//   prepare (reset display) 
-//   get the filename for the user's choice of tree
-//   prepare the progress bar
-//   add a tab
-//   get the species list (calls back to python)
-//   on success, get phylotastic tree (invokes subsequent steps)    
+  // Add a click listener to the whole body. Within the event
+  // listener, we only listen for click events on <a> elements with a
+  // "tree-file" attribute... these are the tree-viz links, so we call
+  // the openTreeView function with appropriate arguments.
+  $('body').on('click', function(event) {
+    var aTarget = $(event.target).closest('a');
+    if (aTarget.length > 0) {
+      if (aTarget.attr('tree-file')) {
+        openTreeView(aTarget.attr('tree-file'), aTarget.attr('tree-label'));
+      }
+    }
+  });
 
-$(function(){
-    $('input.reconcileSubmit').click(function(){
-        // close the about accordion
-        if($('#accordion').accordion('option','active') == 0)
-            $('#accordion').accordion('option','active',false);
-            
-        // remove old tabs
-        var len = $('#tabs').tabs('length');
-        for(var i = 0; i < len; i++)
-            $('#tabs').tabs('remove',0);
-        
-        // reset progress bar
-        $( '#progressbar' ).progressbar( 'option', 'value', 0 );
-        
-        treeFileName = '';
-        
-        // user wants to upload data, deal with it...
-        if(document.dataform.elements['datasource'][1].checked)
-        {
-            console.log('This functionality is not yet implemented in this demo.');
-            // alert('This functionality is not yet implemented in this demo.');
-            return;
-        }
-        else {
-            var treeName = document.dataform.elements['demos'][document.dataform.elements['demos'].selectedIndex].value;
-// March 2013 revisions
-// this is what Arlin would like to do instead of the if-else below
-//	
-//		treeFileName = '/sample_data/demo_'+treeName+'/input_genetree.nwk.txt'; 
-//
-          if(treeName == 'Mammal'){
-              treeFileName = '/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt';
-          } 
-          else {
-              console.log('This functionality is not yet implemented in this demo.');
-           return;
-          }
-        }
-        document.getElementById('reconcileSubmit').disabled = true
-        // make the new tabs
-        document.getElementById('progressContent').innerHTML = "Loading gene tree into Archaeopteryx...<br>"
-        
-        addArchTab(treeFileName, 'GeneTree', 'Gene Tree')
-        updateProgress(35,'Getting species list corresponding to the selected gene tree...<br>')
-        
-        $.ajax({ url: 'getSpeciesList',
-                data: {treefn: treeFileName},
-                success: getPhylotasticTree});
-    })
-});
+  // Main workflow is triggered by button click.
+  button.on('click', function() {
 
-function updateProgress(percent, message) {
-    $( '#progressbar' ).progressbar( 'option', 'value', percent );
-    document.getElementById('progressDone').innerHTML += document.getElementById('progressContent').innerHTML
-    document.getElementById('progressContent').innerHTML = message
-}
+    // Get the tree name from the <select> element
+    var treeName = document.dataform.elements['demos'][document.dataform.elements['demos'].selectedIndex].value;
+    // Store the raw tree name
+    app.treeName = treeName;
+    // Store a filename including the whole folder structure.
+    app.treeFileName = 'static/sample_data/demo_' + treeName + '/input_genetree.nwk.txt';
 
-// add a tab with an archeopteryx viewer for a tree (gene tree, species tree, reconciled tree)
+    // Disable the submit button.
+    button.attr('disabled', 'disabled');
 
-function addArchTab(treeFileName, divid, tabname) {
-    var tabshtml = '';
-    tabshtml += '<div><img id=\"loading\" class=\"loading\"></div>';
-    tabshtml += '<applet archive=\"'+baseURL+'/lib/archaeopteryx_applets.jar\"';
-    tabshtml += 'code=\"org.forester.archaeopteryx.ArchaeopteryxE.class\" codebase=\"'+baseURL+'/lib\" width=\"800\" height=\"500\" alt=\"ArchaeopteryxE is not working on your system (requires at least Sun Java 1.5)!\"><param name=\"url_of_tree_to_load\" value=\"'+baseURL+treeFileName+'\"><param name=\"config_file\" value=\"\"><param name=\"java_arguments\" value=\"-Xmx512m\">';
-    tabshtml += '</applet>';
-    addTab(divid,tabname,tabshtml);
-    $(function() {
-    	$('.tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *')
-    		.removeClass('ui-corner-all ui-corner-top')
-    		.addClass('ui-corner-bottom viz');
+    // Begin the first stage.
+    $('.stages').removeClass('inactive');
+    var stages = $('.stages .stage');
+    for (var i = 0; i < stages.length; i++) {
+      updateStatus({
+        id: stages[i].id,
+        msg: '',
+        status: 'ready'
+      });
+    }
+
+    // Update the appropriate status panel
+    updateStatus({
+      id: 'getSpeciesList',
+      status: 'running',
+      msg: 'Loading gene tree and extracting species names...'
     });
-}
 
-// callback to python to get phylotastic tree
-// on success, reconcile tree
+    // Send the Ajax query (calls the getSpeciesList method within
+    // controllers/reconciliotastic.py)
+    $.ajax({
+      url: 'getSpeciesList',
+      data: {
+        // Note: this is the only param passed for all of the Ajax
+        // calls... it's all we need to track the state of this
+        // request (for now). Things would get more complicated if we
+        // allowed user input.
+        treeFileName: app.treeFileName
+      },
+      success: getPhylotasticTree,
+      failure: failureFn
+    });
+  })
+});
 
 function getPhylotasticTree(response) {
-    var rv = eval('('+response+')')
-    var species = rv['keptNodes']
-    var speciesString = '';
-    for(var i = 0; i < species.length; i++)
-        speciesString = species[i].replace(' ','_') + ','
-    speciesString = speciesString.slice(0, -1)
-    
-    updateProgress(55, 'Getting Phylotastic! tree that corresponds to found species...<br>')
-    
-    $.ajax({ url: 'getPhylotasticTree',
-                data: { speciesString: speciesString, geneTreefn: treeFileName},
-                success: reconcileTrees});
-}
+  // Response returned from controllers/reconciliotastic.py#getSpeciesList
+  var data = JSON.parse(response);
 
-// callback to python to reconcile tree
-// on success, display tree
+  var keptCount = data.keptNodes.length;
+  var removedCount = data.removedNodes.length;
+
+  var msg = [
+    createVizLink(data),
+    'Gene tree loading complete.<br/>',
+    'Identified <b>' + keptCount + ' species</b> in the tree.',
+
+    ].join('');
+  updateStatus({
+    id: 'getSpeciesList',
+    status: 'finished',
+    msg: msg
+  });
+
+  // Carry on to the next Ajax call...
+  setTimeout(function() {
+    updateStatus({
+      id: 'getPhylotasticTree',
+      status: 'running',
+      msg: 'Calling Phylotastic! to extract species tree...'
+    });
+
+    $.ajax({
+      url: 'getPhylotasticTree',
+      data: {
+        treeFileName: app.treeFileName
+      },
+      success: reconcileTrees,
+      failure: failureFn
+    });
+  },
+  500);
+}
 
 function reconcileTrees(response) {
-    var rv = eval('('+response+')')
-    var geneTree = rv['geneTreenm']
-    var speciesTree = rv['speciesTreeName']
-    
-    addArchTab(speciesTree, 'SpeciesTree', 'Species Tree')
-    
-    updateProgress(65, 'Phylotastic! tree aquired, reconciling gene and species trees...<br>')
-    $.ajax({ url: 'reconcileTrees',
-                data: { geneTree:geneTree, speciesTree:speciesTree},
-                success: showReconcileTree});
+  var data = JSON.parse(response);
+  var speciesTreeFile = data.speciesTreeFile;
+
+  var msg = [
+    createVizLink(data),
+    'Species tree extraction complete.', ].join('');
+
+  updateStatus({
+    id: 'getPhylotasticTree',
+    status: 'finished',
+    msg: msg
+  });
+
+  setTimeout(function() {
+    updateStatus({
+      id: 'reconcileTrees',
+      status: 'running',
+      msg: 'Reconciling the gene tree and species tree...'
+    });
+
+    $.ajax({
+      url: 'reconcileTrees',
+      data: {
+        treeFileName: app.treeFileName
+      },
+      success: showReconciledTree,
+      failure: failureFn
+    });
+  },
+  500);
 }
 
-function showReconcileTree(response) {
-    updateProgress(80,'Trees reconciled, loading reconcile tree into Archaeopteryx...<br>')
-    var rv = eval('('+response+')')
-    var reconcileTreefn = rv['reconcileTreeName']
-    
-    addArchTab(reconcileTreefn, 'ReconcileTree', 'Reconcile Tree')
-    updateProgress(100, 'All trees loaded.')
+function showReconciledTree(response) {
+  var data = JSON.parse(response);
+
+  var msg = [
+    createVizLink(data),
+    'Successfully reconciled the gene tree.<br/>',
+    'Red nodes are duplications, green are speciations.'].join('');
+  updateStatus({
+    id: 'reconcileTrees',
+    status: 'finished',
+    msg: msg
+  });
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Reconcili-o-tastic</title>
+	<link rel="stylesheet" type="text/css" href="{{=URL('static', 'css/jquery-ui2.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{=URL('static', 'css/phylotastic.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{=URL('static', 'reconciliotastic/css/reconciliotastic.css')}}">
+    <script type="text/javascript" src="{{=URL('static', 'js/jquery-1.7.1.min.js')}}"></script>
+    <script type="text/javascript" src="{{=URL('static', 'js/jquery-ui-1.8.17.custom.min.js')}}"></script>
+    <script type="text/javascript" src="{{=URL('static', 'js/phylotastic.js')}}"></script>
+    <script type="text/javascript" src="{{=URL('static', 'reconciliotastic/js/reconciliotastic.js')}}"></script>
+	<script>
+	{{import socket}}
+	
+	<!-- we probably should be pulling in the base url and the application name separately and putting those in variables for js and python to use --> 
+	var baseURL = '{{=URL('static', '')}}';
+	</script>
+</head>
+<body>
+
+<div class="header clearfix">
+    <a href="."><img class="header" src="{{=URL('static','reconciliotastic/images/logo.png')}}" alt="reconciliotastic"/></a>
+</div>
+
+<div class="wrapper">
+  <h3>{{=header}}</h3>
+
+  <div>
+  <div><img id="loading" class="loading"/></div>
+  <applet archive="{{=URL('static', 'lib/archaeopteryx_applets.jar')}}"
+          code="org.forester.archaeopteryx.ArchaeopteryxE.class"
+          codebase="{{=URL('static', '/lib')}}" width="800" height="500">
+    <param name="url_of_tree_to_load" value="{{=treeUrl}}"/>
+  </applet>
+  </div>
+  <a href="{{=treeUrl}}" download="{{=header}}.txt">Download tree file</a>
+</div>
+
+</body>
+</html>
