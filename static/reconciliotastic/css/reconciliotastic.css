@@ -6,46 +6,110 @@ body, html {
 applet {
     margin-top: 2em;
     width: 100%;
-    height: 100%;
+}
+
+div.wrapper {
+  position: relative;
+  width: 75%;
+  min-width: 1000px;
+  margin: auto;
+  padding: 10px;
+}
+
+button {
+  font-weight: bold;
+  padding: .5em;
+  float: right;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.stages {
+  clear: both;
+  margin-top: 50px;
+}
+
+.stages.inactive {
+}
+
+.stage {
+  font-family: Verdana,Arial,sans-serif;
+  border: 1px solid #333;
+  padding: 1em;
+}
+
+.stage .header {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.stage .msg {
+  margin-top: 1em;
+}
+
+.stage.ready {
+  opacity: 0.2;  
+}
+
+.stage.running {
+  height: 50px;
+  opacity: 1.0;
+}
+
+.stage.finished {
+  height: 50px;
+  opacity: 1.0;
+}
+
+.viz-link {
+  display: block;
+  float: right;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.viz-link:hover {
+  text-decoration: underline;
+}
+
+div.hidden {
+  display: none;
+}
+
+.pt-clear {
+  clear: both;
 }
 
 div.leftcol {
     float: left;
-    width: 30%;
+    width: 350px;
 }
 
 div.view {
-    float: right;
-    width:70%;
+    position: relative;
+    float: left;
+    width: 500px;
+    margin-left: 20px;
 }
 
-.ui-progressbar-value {
-    background: #7AC943;
+.panel {
+  background-color: #eee;
+  padding: 2em;
+  border-radius: 4px;
+  min-height: 400px;
 }
 
-#progressContent {
-    font-family: helvetica;
-    color: #7AC943;
-}
-
-#progressDone {
-    font-family: helvetica;
-    color: #aaa;
-}
-
-input.reconcileSubmit {
-    margin-right: 1em;
-    float: right;
-}
-
-input.radio {
-    width: 10%;
+.input-form {
+  width: 250px;
+  margin-left: 4em;
 }
 
 select#demos {
-    width: 80%;
-    margin-left: .5em;
-    margin-right: .5em;
+    width: 100%;
 }
 
 input.textbox {

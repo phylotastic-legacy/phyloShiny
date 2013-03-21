@@ -11,59 +11,126 @@
 import os
 import socket
 import urllib2
+from gluon import *
 
 def index():
-    datalist = os.listdir(os.curdir+'/applications/shiny/static/sample_data/')
-    datalist = [n.split('_')[1].split('.')[0] for n in datalist if n.split('_')[0] == 'namelist']
-# March 2013 revisions
-# this is what Arlin would like to do instead of the preceding line
-#   datalist = [n.split('_',1)[1] for n in datalist if n.split('_')[0] == 'demo']
-    return dict(datalist=datalist)
+    rootFolder = current.request.folder
+    folders = os.listdir(rootFolder+'static/sample_data/')
+
+    # Go through the subfolders within sample_data, only keep folders
+    # that match 'demo'
+    folders = [x.split('_',1)[1] for x in folders if x.split('_')[0] == 'demo']
+    folderLabels = [x.replace('_', ' ') for x in folders]
+
+    # Return a list of tuples, like [ ['Mammal_Hemoglobin', 'Mammal Hemoglobin'] , ... ]
+    # This lets us have nice display names in the <select> element in the view.
+    foldersAndLabels = zip(folders, folderLabels)
+    return dict(foldersAndLabels=foldersAndLabels)
+
+def getFileName():
+    # Returns the absolute filename for the "input" gene tree
+    # file. Uses the treeFileName request parameter, as that's our
+    # main state-tracking value passed between the view and controller
+    # between each step.
+    rootFolder = current.request.folder
+    absoluteFileName = rootFolder+current.request.vars.treeFileName
+    return absoluteFileName
+
+def getRelativeWebPath(suffix):
+    # Currently a no-op.
+    return suffix
+
+def visualize():
+    # Visualize controller. Does some preprocessing before generating
+    # the HTML for viewing a given tree.
+
+    #Takes in the 'treeName' and 'file' params, and creates the URL
+    #which can be used to access / download the given tree file.
+    treeFile = current.request.vars.treeName
+    suffix = current.request.vars.file
+    treeUrl = URL('static', 'sample_data/demo_'+treeFile+'/input_genetree.nwk'+suffix,
+                 scheme=True, host=True)
+
+    return dict(treeUrl=treeUrl,
+                header=current.request.vars.header)
 
 def getSpeciesList():
-    inputTreeFP = request.vars.treefn
+    # Absolute file name of the input tree file.
+    absoluteFileName = getFileName()
+    # "Prefix", i.e. the input tree file without the ending
+    # '.txt'. This is used as the prefix for all generated output
+    # files
+    filePrefix = absoluteFileName[:-4]
+
     shellCall = 'java -Xmx1024m -cp '
-    shellCall += os.curdir+'/applications/shiny/static/lib/forester.jar '
+    shellCall += current.request.folder+'static/lib/forester.jar '
     shellCall += 'org.forester.application.gene_tree_preprocess '
-    shellCall += os.curdir+'/applications/shiny/static/'+inputTreeFP
+    shellCall += absoluteFileName
     os.system(shellCall)
+
+    removedNodes = [l.strip() for l in open(filePrefix+'_removed_nodes.txt').readlines()]
+    keptNodes = [l.strip() for l in open(filePrefix+'_species_present.txt').readlines()]
     
-    prefix = os.curdir+'/applications/shiny/static/'+inputTreeFP[:-4]
-    
-    removedNodes = [l.strip() for l in open(prefix+'_removed_nodes.txt').readlines()]
-    keptNodes = [l.strip() for l in open(prefix+'_species_present.txt').readlines()]
-    processedGeneTree = [l.strip() for l in open(prefix+'_preprocessed_gene_tree.phylo.xml').readlines()]
-    
-    return response.json( dict(removedNodes = removedNodes, keptNodes = keptNodes, processedGeneTree = processedGeneTree))
+    geneTreeFile = getRelativeWebPath('_preprocessed_gene_tree.phylo.xml')
+
+    # Note: we always return the 'vizFile' and 'vizLabel' data values
+    # from each Ajax call, as they're used consistently by the
+    # front-end to generate visualization links.
+    return response.json( dict(vizFile = geneTreeFile,
+                               vizLabel = "Input Gene Tree",
+                               removedNodes = removedNodes, 
+                               keptNodes = keptNodes))
 
 def getPhylotasticTree():
-    phylotasticURLbase = 'http://phylotastic-wg.nescent.org/script/phylotastic.cgi?species='
-    speciesString = request.vars.speciesString
-    speciesTreeURL = phylotasticURLbase+speciesString+'&tree=mammals&format=newick'
-    speciesTree = urllib2.urlopen(speciesTreeURL)
-    stree = speciesTree.read()
-    geneTreefp = request.vars.geneTreefn
-    
-    geneTreeName = geneTreefp[:-4]
-    speciesTreeName = geneTreeName+'_species_tree.txt'
-    speciesTreefp =  os.curdir+'/applications/shiny/static'+geneTreeName+'_species_tree.txt'
-    
-    open(speciesTreefp,'w').write(stree)
-    return response.json( dict(geneTreenm = geneTreeName, speciesTreeName = speciesTreeName))
+    absoluteFileName = getFileName()
+    filePrefix = absoluteFileName[:-4]
+
+    # Load the kept nodes and create the comma-delimited species
+    # string for sending to PTastic
+    speciesList = [l.strip() for l in open(filePrefix+'_species_present.txt').readlines()]
+    # Need underscores instead of spaces
+    speciesList = [x.replace(' ', '_') for x in speciesList]
+    speciesString = ','.join(speciesList)
+
+    phylotasticUrlBase = 'http://phylotastic-wg.nescent.org/script/phylotastic.cgi?species='
+    speciesTreeUrl = phylotasticUrlBase+speciesString+'&tree=mammals&format=newick'
+    conn = urllib2.urlopen(speciesTreeUrl)
+    speciesTreeString = conn.read()
+    speciesTreeString = speciesTreeString.strip()
+
+    speciesTreeFilename = filePrefix+'_species_tree.txt'
+    open(speciesTreeFilename,'w').write(speciesTreeString)
+
+    # TODO: It would be nice here to count the number of species in
+    # the returned species tree, so we can let users know if PTastic
+    # found everything we searched for. This would require parsing the
+    # Newick and counting nodes, probably using something like
+    # BioPython rather than making an external call to Java again.
+
+    speciesTreeWebFile = getRelativeWebPath('_species_tree.txt')
+
+    return response.json( dict(vizFile = speciesTreeWebFile,
+                               vizLabel = "Phylotastic Species Tree"
+                               ) )
 
 def reconcileTrees():
-    geneTreeName = request.vars.geneTree
-    speciesTreefp = request.vars.speciesTree
-    speciesTreeName = geneTreeName+'_species_tree.txt'
+    absoluteFileName = getFileName()
+    filePrefix = absoluteFileName[:-4]
+
+    geneTreeFile = filePrefix+'_preprocessed_gene_tree.phylo.xml'
+    speciesTreeFile = filePrefix+'_species_tree.txt'
+
     shellCall = 'java -Xmx1024m -cp '
-    shellCall += os.curdir+'/applications/shiny/static/lib/forester.jar '
+    shellCall += current.request.folder+'static/lib/forester.jar '
     shellCall += 'org.forester.application.gsdi '
     shellCall += '-m -q '
-    shellCall += os.curdir+'/applications/shiny/static'+geneTreeName+'_preprocessed_gene_tree.phylo.xml '
-    shellCall += speciesTreefp+' '
-    
+    shellCall += geneTreeFile
+    shellCall += ' '+speciesTreeFile
+
     os.system(shellCall)
     
-    recTreefp = geneTreeName+'_preprocessed_gene_tree.phylo_gsdi_out.phylo.xml'
+    reconciledTreeWebFile = getRelativeWebPath('_preprocessed_gene_tree.phylo_gsdi_out.phylo.xml')
     
-    return response.json( dict(reconcileTreeName = recTreefp, speciesTreeName = speciesTreeName))
+    return response.json( dict(vizFile = reconciledTreeWebFile,
+                               vizLabel = "Reconciled Gene Tree"
+                               ) )

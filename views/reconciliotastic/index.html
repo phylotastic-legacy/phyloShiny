@@ -13,7 +13,7 @@
 	{{import socket}}
 	
 	<!-- we probably should be pulling in the base url and the application name separately and putting those in variables for js and python to use --> 
-	var baseURL = 'http://phylotastic.nescent.org/{{=request.application}}/static';
+	var baseURL = '{{=URL('static', '')}}';
 	</script>
 </head>
 <body>
@@ -21,114 +21,90 @@
 <div class="header clearfix">
     <a href="."><img class="header" src="{{=URL('static','reconciliotastic/images/logo.png')}}" alt="reconciliotastic"/></a>
 </div>
-<div class="wrapper clearfix">
-	<div class="leftcol clearfix">
-		<p class="ui-state-default ui-corner-all ui-helper-clearfix ui-widget " style="padding:4px; margin:0px;">
-		Select a demo or upload a file 
-			</p>
-			<br>
-			<form name="dataform">
-			<ul class="datasources">
-
-			<li><input class="radio" type="radio" name="datasource" value="demo" checked="true" onchange="toggleDatasources()"></input>
-			<select id="demos" name="demos" onchange="enableSubmit()" onclick="enableSubmit()">
+<div class="wrapper">
+	<div class="leftcol panel">
+    <h3>Try Reconciliotastic</h3>
+		<form class="input-form" name="dataform">
+			<select id="demos" name="demos">
 				<option>Select a demo gene tree...</option>
-				{{for n in datalist:}}
-				<option value="{{=n}}">{{=n}}</option>
+				{{for tuple in foldersAndLabels:}}
+				<option value="{{=tuple[0]}}">{{=tuple[1]}}</option>
 				{{pass}}
 			</select>
-			</li>
-			<li>
-			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input><input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input><input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input></li>
-			</ul>
-			<input type="button" id="reconcileSubmit" class="reconcileSubmit" value="Reconcile"></input>
-			</form>
-
-<!-- 
-			<form name="dataform">
-			<ul class="datasources">
-			<li>
-			<input class="radio" type="radio" name="datasource" value="demo" checked="true" onchange="toggleDatasources()"></input>
-			Select a demo
-			<select id="demos" name="demos" onchange="enableSubmit()" onclick="enableSubmit()">
-				<option>Some gene trees</option>
-				{{for n in datalist:}}
-				<option value="{{=n}}">{{=n}}</option>
-				{{pass}}
-			</select>
-			</li>
-			<li>
-			<input class="radio" type="radio" name="datasource" value="upload" onchange="toggleDatasources()"></input>
-			Upload a file (not implemented)
-			<input type="text" id="uploadFileName" name="uploadFileName" class="textbox" disabled="true"></input>
-			<input type="button" value="Upload" class="submit" disabled="true" id="uploadSubmit"></input>
-			</li>
-			</ul>
-			<input type="button" id="reconcileSubmit" class="reconcileSubmit" value="Reconcile"></input>
-			</form>
- -->
-			<!-- <input type="button" class="progress" value="Progress"></input> -->
-			<br>
-			<br>
-			<div id="progressbar" class="ui-progressbar ui-widget ui-helper-clearfix ui-widget-content ui-corner-all"></div>
-			<div id="progressDone"></div>
-			<div id="progressContent"></div>
-		</div>
-	<div class="view">
-		<div id="accordion">
-    	   	    <h3><a href="#">about</a></h3>
-    	   	    <div class="accordionSection">
-    	   	        <div id="innerAccordion">
-    	   	            <h3><a href="#">Reconciliotastic</a></h3>
-    	   	            <div class="accordionSection">
-        	   	            <p>
-                	   	    <b class="big">Reconciliotastic</b> is a demonstration system showing a phylotastic approach to the "reconciliation problem" (for explanation, see <a href="http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html">http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html</a>). A phylogeny of genes (proteins) may reflect duplications, losses, and lateral transfers. "Reconciling" a gene tree with a species tree reveals these events.
-<br>
-The Reconcili-o-tastic demo currently allows only 1 input choice, which is a predetermined gene tree. The demo proceeds as follows:
-<ol>
-<li>The gene tree is read and displayed</li>
-<li>Gene or protein names in the input tree are identified</li>
-<li>The corresponding species names are found</li>
-<li>A species tree is retrieved phylotastically; it is displayed</li>
-<li>The species tree and the gene tree are reconciled</li>
-<li>The reconciled tree is displayed</li>
-</ol>
-<br>
-Step 2 and 3 are carried out by a modified version of Christian Zmasek's SDI program. In step 3, SDI invokes web services provided by UniProt to find the species for a given accession number. Step 4 uses a phylotastic demo server that extracts a subtree form a phylogeny of 4500 mammals from Bininda-Emonds, et al. Step 5 is carried out by Christian Zmasek's SDI program.
-<br>
-The visualization steps in #1, #4 and #6 are done using Christian Zmasek's Archaeopteryx viewer.
-                	   	     </p>
-            	   	     </div>
-            	   	     <h5><a href="#">Phylotastic</a></h5>
-                	   	 <div class="accordionSection">
-							<p>
-                	   	    <a href="http://phylotastic.org"><b class="big">Phylotastic</b></a> refers to a hackathon project of the <a href="http://www.evoio.org">HIP</a> or "Hackathons, Interoperability, Phylogenies" working group of <a href="www.nescent.org">NESCent</a>.<br> The aim of the project is to build a phylotastic system. A system is phylotastic to the extent that, in response to a user query S*, it supplies expert phylogenetic knowledge of S, doing so in a timely manner. For more about the Phylotastic Project, see the <a href="http://www.evoio.org/wiki/Phylotastic">wiki</a>.
-                	   	     </p>
-							<br><br>
-                	   	 </div>
-                	   	 <h3><a href="#">Demo Datasets</a></h3>
-                	   	 <div class="accordionSection"><p>
-Currently the demo uses just one input-- a gene tree with 100 primate beta-tubulin genes.  The <a href="https://github.com/phylotastic/phyloShiny/blob/master/static/sample_data/primate_tubulin_test1/primate_tubulin_embedded_ids.nwk.txt">raw tree file</a> is on github in case you want to see it.  This and other data sets were assembled by Arlin Stoltzfus using NCBI web tools to identify homologs, compute a phylogeny, and prune the phylogeny to create a data set with interesting features.</p>
-            	   	     </div>
-						<h5><a href="#">The Shiny Team</a></h5>
-                	   	 <div class="accordionSection">
-						<p>On Day 1 of the Phylotastic hackathon, one of the participants argued for the importance of producing something "shiny". The Shiny Team, consisting of Christopher Baron, Holly Bik, Meg Pirrung, Arlin Stoltzfus and Christian Zmasek, took on the task of designing and implementing compelling user-oriented demonstrations, including Reconciliotastic. For more information, see the <a href="http://www.evoio.org/wiki/Phylotastic/Shiny">wiki</a>.</p>
-						<p>Reconciliotastic was designed by the Shiny Team and implemeted by Christopher Baron, Meg Pirrung and Christian Zmasek. <br>We thank the organizers of the hackathon (HIP), the host of the hackathon (NESCent), and the sponsors of the HIP working group (NESCent, iPlant and BioSync) for giving us this opportunity.</p>
-                	   	 </div>
-            	   	</div>
-            	   	<br>
-        	   	     Reconciliotastic has been developed by the <a href="http://www.evoio.org/wiki/Phylotastic/shiny">Shiny</a> Team of <a href="http://www.evoio.org/wiki/Phylotastic">Phylotastic</a> 	   	    
-    	   	    </div>
-    	   	</div>
-    	   	
-	   	    <div id="tabs" class="tabs-bottom">
-	   	        <ul>
-	   	            <li><a href="#tab1">Home</a></li>
-	   	        </ul>
-    	   	    <div id="tab1">
-    	   	    </div>
-    	   	</div>
+			<button id="reconcileSubmit" class="button reconcileSubmit" value="Reconcile Trees" disabled="disabled">Reconcile Trees</button>
+		</form>
+    
+    <div class="stages inactive">
+      <div class="stage ready" id="getSpeciesList">
+        <div class="header">1. Load Gene Tree</div>
+        <div class="msg"></div>
+      </div>
+      <div class="stage ready" id="getPhylotasticTree">
+        <div class="header">2. Extract Phylotastic! Tree</div>
+        <div class="msg"></div>
+      </div>
+      <div class="stage ready" id="reconcileTrees">
+        <div class="header">3. Reconcile Trees</div>
+        <div class="msg"></div>
+      </div>
+    </div>
 	</div>
+  
+	<div class="view">
+		<div class="panel">
+    	<h3>About</h3>
+      <div class="accordionSection">
+
+    	<div class="innerAccordion">
+    	  <h3><a href="#">Reconciliotastic</a></h3>
+    	  <div class="accordionSection">
+        	<p>
+            <b class="big">Reconciliotastic</b> is a demonstration system showing a phylotastic approach to the "reconciliation problem" (for explanation, see <a href="http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html">http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html</a>). A phylogeny of genes (proteins) may reflect duplications, losses, and lateral transfers. "Reconciling" a gene tree with a species tree reveals these events.
+            <br>
+            The Reconcili-o-tastic prototype demonstrates reconciliation for a selection of pre-set trees. The demo proceeds as follows:
+            <ol>
+              <li>
+                The gene tree is read and displayed;<br/>
+                Gene or protein names in the input tree are identified;<br/>
+                The corresponding species names are found
+              </li>
+              <li>A species tree is retrieved phylotastically</li>
+              <li>The species tree and the gene tree are reconciled</li>
+            </ol>
+            <br>
+            Steps 1 and 3 are carried out by a modified version of Christian Zmasek's SDI program. In step 1, SDI invokes web services provided by UniProt to find the species for a given accession number. Step 2 uses a phylotastic demo server that extracts a subtree form a phylogeny of 4500 mammals from Bininda-Emonds, et al.
+            <br>
+            All tree visualizations a provided by an embedded Java applet containing Christian Zmasek's Archaeopteryx viewer.
+          </p>
+        </div>
+        <h3><a href="#">Phylotastic</a></h3>
+        <div class="accordionSection">
+					<p>
+            <a href="http://phylotastic.org"><b class="big">Phylotastic</b></a> refers to a hackathon project of the <a href="http://www.evoio.org">HIP</a> or "Hackathons, Interoperability, Phylogenies" working group of <a href="www.nescent.org">NESCent</a>.<br> The aim of the project is to build a phylotastic system. A system is phylotastic to the extent that, in response to a user query S*, it supplies expert phylogenetic knowledge of S, doing so in a timely manner. For more about the Phylotastic Project, see the <a href="http://www.evoio.org/wiki/Phylotastic">wiki</a>.
+          </p>
+					<br><br>
+        </div>
+        <h3><a href="#">Demo Datasets</a></h3>
+        <div class="accordionSection"><p>
+            <span style="color:red;">[TODO]</span> Currently the demo
+            uses only pre-made input gene trees with mammalian
+            species. Arlin Stoltzfus collected the demo datasets,
+            using NCBI web tools to identify homologs, compute a
+            phylogeny, and prune the phylogeny to create a data set
+            with interesting features.</p>
+        </div>
+				<h5><a href="#">The Shiny Team</a></h5>
+        <div class="accordionSection">
+					<p>On Day 1 of the Phylotastic hackathon, one of the participants argued for the importance of producing something "shiny". The Shiny Team, consisting of Christopher Baron, Holly Bik, Meg Pirrung, Arlin Stoltzfus and Christian Zmasek, took on the task of designing and implementing compelling user-oriented demonstrations, including Reconciliotastic. For more information, see the <a href="http://www.evoio.org/wiki/Phylotastic/Shiny">wiki</a>.</p>
+					<p>Reconciliotastic was designed by the Shiny Team and implemeted by Christopher Baron, Meg Pirrung and Christian Zmasek. <br>We thank the organizers of the hackathon (HIP), the host of the hackathon (NESCent), and the sponsors of the HIP working group (NESCent, iPlant and BioSync) for giving us this opportunity.</p>
+        </div>
+      </div>
+      <br>
+      Reconciliotastic has been developed by the <a href="http://www.evoio.org/wiki/Phylotastic/shiny">Shiny</a> Team of <a href="http://www.evoio.org/wiki/Phylotastic">Phylotastic</a> 	   	    
+    </div>
+    </div>
+  </div>    	   	
+  <div class="pt-clear"></div>
 </div>
 
 </body>
