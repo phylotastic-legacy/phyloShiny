@@ -48,8 +48,10 @@ def visualize():
     #which can be used to access / download the given tree file.
     treeFile = current.request.vars.treeName
     suffix = current.request.vars.file
+
+    hostname = current.request.env.http_host
     treeUrl = URL('static', 'sample_data/demo_'+treeFile+'/input_genetree.nwk'+suffix,
-                 scheme='http', host='phylotastic.nescent.org')
+                 scheme='http', host=hostname)
 
     return dict(treeUrl=treeUrl,
                 header=current.request.vars.header)
