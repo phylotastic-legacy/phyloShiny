@@ -31,20 +31,20 @@
 				<option value="{{=tuple[0]}}">{{=tuple[1]}}</option>
 				{{pass}}
 			</select>
-			<button id="reconcileSubmit" class="button reconcileSubmit" value="Reconcile Trees" disabled="disabled">Reconcile Trees</button>
+			<button id="reconcileSubmit" class="button reconcileSubmit" value="Reconcile Trees" disabled="disabled">Run demo</button>
 		</form>
     
     <div class="stages inactive">
       <div class="stage ready" id="getSpeciesList">
-        <div class="header">1. Load Gene Tree</div>
+        <div class="header">1. Process the Gene Tree</div>
         <div class="msg"></div>
       </div>
       <div class="stage ready" id="getPhylotasticTree">
-        <div class="header">2. Extract Phylotastic! Tree</div>
+        <div class="header">2. Get Species Tree from Phylotastic!</div>
         <div class="msg"></div>
       </div>
       <div class="stage ready" id="reconcileTrees">
-        <div class="header">3. Reconcile Trees</div>
+        <div class="header">3. Reconcile the 2 Trees</div>
         <div class="msg"></div>
       </div>
     </div>
