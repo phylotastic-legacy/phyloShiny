@@ -1,2 +1,8 @@
 .DS_Store
 .DS_store
+*_auth_*.table
+static/sample_data/*/*_preprocessed_gene_tree.phylo.xml
+static/sample_data/*/*_removed_nodes.txt
+static/sample_data/*/*_species_present.txt
+static/sample_data/*/*_species_tree.txt
+private/auth.key

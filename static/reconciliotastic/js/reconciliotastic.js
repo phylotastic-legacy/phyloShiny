@@ -91,7 +91,8 @@ $(function() {
   });
 
   // Main workflow is triggered by button click.
-  button.on('click', function() {
+  button.on('click', function(e) {
+    e.preventDefault();
 
     // Get the tree name from the <select> element
     var treeName = document.dataform.elements['demos'][document.dataform.elements['demos'].selectedIndex].value;
