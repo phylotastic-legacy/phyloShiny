@@ -44,12 +44,23 @@ def visualize():
     # Visualize controller. Does some preprocessing before generating
     # the HTML for viewing a given tree.
 
-    #Takes in the 'treeName' and 'file' params, and creates the URL
-    #which can be used to access / download the given tree file.
+    # Takes in the 'treeName' and 'file' params, and creates the URL
+    # which can be used to access / download the given tree file. This
+    # is only really necessary because the <applet> tag requires a
+    # parameter, which is then sent to Archaeopteryx, that requires
+    # the *entire* URL of the tree to load. With a non-applet based
+    # visualization this wouldn't be an issue.
     treeFile = current.request.vars.treeName
     suffix = current.request.vars.file
 
+    # Use the request http_host.
     hostname = current.request.env.http_host
+
+    # Toggle to phylotastic URL if we detect a NESCENT socket host.
+    socket_hostname = socket.gethostname()
+    if 'phylotastic' in socket_hostname.lower():
+        hostname = 'phylotastic.nescent.org'
+
     treeUrl = URL('static', 'sample_data/demo_'+treeFile+'/input_genetree.nwk'+suffix,
                  scheme='http', host=hostname)
 
