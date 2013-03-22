@@ -49,7 +49,7 @@ def visualize():
     treeFile = current.request.vars.treeName
     suffix = current.request.vars.file
     treeUrl = URL('static', 'sample_data/demo_'+treeFile+'/input_genetree.nwk'+suffix,
-                 scheme=True, host=True)
+                 scheme='http', host='phylotastic.nescent.org')
 
     return dict(treeUrl=treeUrl,
                 header=current.request.vars.header)
