@@ -9,4 +9,4 @@ The main thing that phyloShiny does is to implement "Reconcili-o-tastic", a proo
 
 The repo is called "phyloShiny" rather than "reconciliotastic" because it was conceived originally as having a broader scope. 
 
-Creating a local installation is relatively easy.  First install web2py.  Then checkout the phyloShiny repository, and put it in web2py/applications.  Make an alias (to phyloShiny) called "shiny".  That should work.  
+Creating a local installation is relatively easy.  First install web2py.  Then checkout the phyloShiny repository, and put it in web2py/applications.  Make an alias (to phyloShiny) called "shiny".  The demo will be running at http://127.0.0.1:8000/shiny/reconciliotastic/index . 
