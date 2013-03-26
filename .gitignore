@@ -1,8 +1,14 @@
 .DS_Store
 .DS_store
-*_auth_*.table
+private/auth.key
 static/sample_data/*/*_preprocessed_gene_tree.phylo.xml
 static/sample_data/*/*_removed_nodes.txt
 static/sample_data/*/*_species_present.txt
 static/sample_data/*/*_species_tree.txt
-private/auth.key
+static/sample_data/*/*_gsdi_out.phylo.xml
+private/auth.keydatabases/c8b669d15150d7109e5f7ab36744a5b7_auth_cas.table
+databases/c8b669d15150d7109e5f7ab36744a5b7_auth_event.table
+databases/c8b669d15150d7109e5f7ab36744a5b7_auth_group.table
+databases/c8b669d15150d7109e5f7ab36744a5b7_auth_membership.table
+databases/c8b669d15150d7109e5f7ab36744a5b7_auth_permission.table
+databases/c8b669d15150d7109e5f7ab36744a5b7_auth_user.table
