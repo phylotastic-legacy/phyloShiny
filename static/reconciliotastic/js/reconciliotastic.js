@@ -119,7 +119,7 @@ $(function() {
     updateStatus({
       id: 'getSpeciesList',
       status: 'running',
-      msg: 'Loading gene tree and extracting species names...'
+      msg: 'Loading gene tree, finding species names...'
     });
 
     // Send the Ajax query (calls the getSpeciesList method within
@@ -163,7 +163,7 @@ function getPhylotasticTree(response) {
     updateStatus({
       id: 'getPhylotasticTree',
       status: 'running',
-      msg: 'Calling Phylotastic! to extract species tree...'
+      msg: 'Calling Phylotastic! to get species tree...'
     });
 
     $.ajax({
@@ -184,7 +184,7 @@ function reconcileTrees(response) {
 
   var msg = [
     createVizLink(data),
-    'Species tree extraction complete.', ].join('');
+    'Species tree obtained.', ].join('');
 
   updateStatus({
     id: 'getPhylotasticTree',
@@ -216,7 +216,7 @@ function showReconciledTree(response) {
 
   var msg = [
     createVizLink(data),
-    'Successfully reconciled the gene tree.<br/>',
+    'Successfully reconciled the trees.<br/>',
     'Red nodes are duplications, green are speciations.'].join('');
   updateStatus({
     id: 'reconcileTrees',

@@ -56,51 +56,63 @@
       <div class="accordionSection">
 
     	<div class="innerAccordion">
-    	  <h3><a href="#">Reconciliotastic</a></h3>
+    	  <h3><a href="#">What it does</a></h3>
     	  <div class="accordionSection">
         	<p>
-            <b class="big">Reconciliotastic</b> is a demonstration system showing a phylotastic approach to the "reconciliation problem" (for explanation, see <a href="http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html">http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html</a>). A phylogeny of genes (proteins) may reflect duplications, losses, and lateral transfers. "Reconciling" a gene tree with a species tree reveals these events.
-            <br>
-            The Reconcili-o-tastic prototype demonstrates reconciliation for a selection of pre-set trees. The demo proceeds as follows:
+            <b class="big">Reconciliotastic</b> is proof-of-concept software showing a phylotastic approach to the <a href="http://goby.compbio.cs.cmu.edu/Notung/dupTimes.html">reconciliation problem</a>. A phylogeny of genes (proteins) may reflect duplications, losses, and lateral transfers. "Reconciling" a gene tree with a species tree reveals these events, but only if you can get a species tree-- that's where <a href="http://phylotastic.org">phylotastic</a> comes in.  When you select a gene tree and click the "run demo" button:
             <ol>
               <li>
-                The gene tree is read and displayed;<br/>
-                Gene or protein names in the input tree are identified;<br/>
-                The corresponding species names are found
+                The gene tree is read
               </li>
-              <li>A species tree is retrieved phylotastically</li>
+              <li>Species sources are discovered using the sequence identifiers in the gene tree file </li>
+              <li>A tree for the implicated species is obtained by a <a href="http://phylotastic.org">phylotastic</a> query
+                </li>
               <li>The species tree and the gene tree are reconciled</li>
             </ol>
-            <br>
-            Steps 1 and 3 are carried out by a modified version of Christian Zmasek's SDI program. In step 1, SDI invokes web services provided by UniProt to find the species for a given accession number. Step 2 uses a phylotastic demo server that extracts a subtree form a phylogeny of 4500 mammals from Bininda-Emonds, et al.
-            <br>
-            All tree visualizations a provided by an embedded Java applet containing Christian Zmasek's Archaeopteryx viewer.
+            Each of the 3 trees can be viewed interactively via the "click to view" link provided.  See "How it works" for more details. 
           </p>
         </div>
-        <h3><a href="#">Phylotastic</a></h3>
-        <div class="accordionSection">
-					<p>
-            <a href="http://phylotastic.org"><b class="big">Phylotastic</b></a> refers to a hackathon project of the <a href="http://www.evoio.org">HIP</a> or "Hackathons, Interoperability, Phylogenies" working group of <a href="www.nescent.org">NESCent</a>.<br> The aim of the project is to build a phylotastic system. A system is phylotastic to the extent that, in response to a user query S*, it supplies expert phylogenetic knowledge of S, doing so in a timely manner. For more about the Phylotastic Project, see the <a href="http://www.evoio.org/wiki/Phylotastic">wiki</a>.
+    	  <h3><a href="#">How it works</a></h3>
+    	  <div class="accordionSection">
+        	<p>
+        	Reconcili-o-tastic is a web2py application that relies on code written in Javascript (and JQuery), Python, and Java: 
+           <ul>
+              <li>All 3 trees are visualized using <a href="https://sites.google.com/site/cmzmasek/home/software/archaeopteryx">Archaeopteryx</a>, an embedded Java applet from Christian Zmasek's <a href="https://code.google.com/p/forester/">forester</a> package</li>
+              <li>Species names are obtained from sequence identifiers using <a href="http://www.uniprot.org/faq/28">UniProt web services</a></li>
+              <li>To get the species tree, we use a prototype <a href="http://www.phylotastic.org">Phylotastic</a> system for on-the-fly delivery of Tree-of-Life knowledge.  In this case, a <a href="http://phylotastic-wg.nescent.org/script/phylotastic.cgi">phylotastic pruner</a> splices out a subtree from <a href="http://www.nature.com/nature/journal/v446/n7135/abs/nature05634.html">an expert phylogeny of 4500 mammals</a>.  </li> 
+              <li>The trees are reconciled using the SDI reconciliation engine from Christian Zmasek's <a href="https://code.google.com/p/forester/">forester</a> package. </li>
+            </ul>
+            Reconcili-o-tastic is open-source software.  Instructions for downloading the code and creating your own implementation are in the <a href="https://github.com/phylotastic/phyloShiny/blob/master/README.md">README file on github</a>.
           </p>
-					<br><br>
         </div>
-        <h3><a href="#">Demo Datasets</a></h3>
+        <h3><a href="#">Data Sources</a></h3>
         <div class="accordionSection"><p>
-            <span style="color:red;">[TODO]</span> Currently the demo
-            uses only pre-made input gene trees with mammalian
-            species. Arlin Stoltzfus collected the demo datasets,
-            using NCBI web tools to identify homologs, compute a
-            phylogeny, and prune the phylogeny to create a data set
-            with interesting features.</p>
+        The outputs of this software reflect two types of inputs: 
+        <ol>
+        <li><b>Expert species trees</b> invoked via the phylotastic query, currently including only the tree of 4500 mammal species by <a href="http://www.nature.com/nature/journal/v446/n7135/abs/nature05634.html">Bininda-Emonds, et al., 2007.</a> </li>
+        <li><b>Sample gene trees</b> (made from GenBank data using standard tools) invoked via the pull-down menu, currently including:  
+    	<ul>
+    	<li><b>Mammal Hemoglobins</b>, with 31 alpha and beta hemoglobins from 9 species (or 8 hemoglobins from 4 species in the <b>Pruned</b> version). </li>
+    	<li><b>Primate tubulins</b>, with 100 alpha and beta tubulins from 4 species</li>
+    	<li><b>Mammal Mak10</b>, with 40 NatC N(alpha)-terminal acetyltransferases from 28 different species</li>
+    	</ul>
+    	</ol>
+    	In the future, we hope to support user-supplied files, and to allow source trees other than the mammal tree. 
+    	</p>
         </div>
-				<h5><a href="#">The Shiny Team</a></h5>
+        <h3><a href="#">Comments? Feedback? Going further?</a></h3>
         <div class="accordionSection">
-					<p>On Day 1 of the Phylotastic hackathon, one of the participants argued for the importance of producing something "shiny". The Shiny Team, consisting of Christopher Baron, Holly Bik, Meg Pirrung, Arlin Stoltzfus and Christian Zmasek, took on the task of designing and implementing compelling user-oriented demonstrations, including Reconciliotastic. For more information, see the <a href="http://www.evoio.org/wiki/Phylotastic/Shiny">wiki</a>.</p>
-					<p>Reconciliotastic was designed by the Shiny Team and implemeted by Christopher Baron, Meg Pirrung and Christian Zmasek. <br>We thank the organizers of the hackathon (HIP), the host of the hackathon (NESCent), and the sponsors of the HIP working group (NESCent, iPlant and BioSync) for giving us this opportunity.</p>
+       <p>Reconcili-o-tastic is open-source software.  Instructions for downloading the code and creating your own implementation are in the <a href="https://github.com/phylotastic/phyloShiny/blob/master/README.md">README file on github</a>.</p>
+       <p>Does this software seem useful to you?  Do you have a project that might benefit from software like Reconcili-o-tastic?  Whether you consider yourself a potential user, or a potential developer, please let us know what you think of this project.  Currently this is an unfunded, unstaffed project. We are looking for ways to develop it further, including collaborations with funded projects as well as new sources of funding.  Community feedback is essential. </p>
+       <p>Send feedback to Arlin Stoltzfus (arlin@umd.edu) or post a message to the Hackathons, Interoperability, Phylogenies mailing list at hip@nescent.org</p>
+        </div>
+		<h3><a href="#">Credits</a></h3>
+        <div class="accordionSection">
+					<p>On Day 1 of the 1st Phylotastic hackathon, Mark Holder argued for the importance of producing something "shiny". Team Shiny, consisting of Christopher Baron, Holly Bik, Meg Pirrung, Arlin Stoltzfus and Christian Zmasek, took on the task of designing and implementing compelling user-oriented demonstrations, including Reconciliotastic. For more information, see the <a href="http://www.evoio.org/wiki/Phylotastic/Shiny">wiki</a>.</p>
+					<p>Reconciliotastic was designed by Team Shiny and implemented initially by Christopher Baron, Meg Pirrung and Christian Zmasek, with subsequent modifications by Greg Jordan and Arlin Stoltzfus. </p>
+					<p>We thank the <a href="http://www.evoio.org/wiki/HIP">Hackathons, Interoperability, Phylogenies (HIP) working group</a> for organizing the hackathon.  We thank the <a href="http://www.nescent.org">National Evolutionary Synthesis Center (NESCent)</a> for hosting the hackathon. We thank <a href="http://www.nescent.org">NESCent</a>, <a href="http://www.iplantcollaborative.org/">iPlant</a> and <a href="http://synthesis.eol.org/">EOL BioSync</a> for providing financial support for the hackathon.</p>
         </div>
       </div>
-      <br>
-      Reconciliotastic has been developed by the <a href="http://www.evoio.org/wiki/Phylotastic/shiny">Shiny</a> Team of <a href="http://www.evoio.org/wiki/Phylotastic">Phylotastic</a> 	   	    
     </div>
     </div>
   </div>    	   	

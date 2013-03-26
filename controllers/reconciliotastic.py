@@ -145,5 +145,5 @@ def reconcileTrees():
     reconciledTreeWebFile = getRelativeWebPath('_preprocessed_gene_tree.phylo_gsdi_out.phylo.xml')
     
     return response.json( dict(vizFile = reconciledTreeWebFile,
-                               vizLabel = "Reconciled Gene Tree"
+                               vizLabel = "Reconciled Tree (red=duplication, green=speciation)"
                                ) )
